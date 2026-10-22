@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Guia C — Front</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; }
+    input, button { padding: 8px; margin-right: 8px; }
+    li { margin: 6px 0; }
+  </style>
+</head>
+<body>
+  <h1>Guia C — Front + API MySQL</h1>
+  <p>Altere a constante API abaixo para a URL do seu backend publicado.</p>
+  <input id="titulo" placeholder="Nova tarefa" />
+  <button id="add">Adicionar</button>
+  <ul id="lista"></ul>
+  <script>
+    const API = 'http://localhost:3000'; // troque pela URL do Render depois do deploy
+    async function carregar() {
+      const res = await fetch(API + '/tarefas');
+      const dados = await res.json();
+      document.getElementById('lista').innerHTML = dados.map(t => `<li>${t.titulo}</li>`).join('');
+    }
+    document.getElementById('add').onclick = async () => {
+      const titulo = document.getElementById('titulo').value.trim();
+      if (!titulo) return;
+      await fetch(API + '/tarefas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ titulo }),
+      });
+      document.getElementById('titulo').value = '';
+      carregar();
+    };
+    carregar();
+  </script>
+</body>
+</html>
